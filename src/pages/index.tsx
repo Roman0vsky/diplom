@@ -3,28 +3,34 @@ import { Route, Routes } from "react-router-dom";
 import ErrorPage from "./error";
 import LoaderElement from "../shared/ui/loaderElement";
 import ProtectedRoute from "./protectedRoute";
+import SocialWorkers from "./socialWorkers";
 
 export default function Routing() {
   const Auth = lazy(() => import("./auth"));
-  const SocialWorkers = lazy(() => import("./social-workers"));
-  const QR_Code = lazy(() => import("./qr-code"));
   const Profile = lazy(() => import("./profile"));
-  const Staff = lazy(() => import("./staff"));
+  const Inspectors = lazy(() => import("./inspectors"));
+  const Regions = lazy(() => import("./regions"));
+  const QR_Code = lazy(() => import("./qr-code"));
+  const Clients = lazy(() => import("./clients"));
+  const AssignedSocialWorker = lazy(() => import("./assignedSocialWorker"));
+  const Nurse = lazy(() => import("./nurse"));
+  const Favours = lazy(() => import("./favours"));
+  const AdminReport = lazy(() => import("./adminReport"));
+  const InspectorReport = lazy(() => import("./inspectorReport"));
+  const SocialWorkerReport = lazy(() => import("./socialWorkerReport"));
 
   return (
     <Routes>
       <Route path="*" element={<ErrorPage />} errorElement={<ErrorPage />} />
-      <Route element={<ProtectedRoute authRoutes />}>
-        <Route
-          path="/auth"
-          element={
-            <Suspense fallback={<LoaderElement />}>
-              <Auth />
-            </Suspense>
-          }
-          errorElement={<ErrorPage />}
-        />
-      </Route>
+      <Route
+        path="/auth"
+        element={
+          <Suspense fallback={<LoaderElement />}>
+            <Auth />
+          </Suspense>
+        }
+        errorElement={<ErrorPage />}
+      />
 
       <Route element={<ProtectedRoute commonRoutes />}>
         <Route
@@ -34,23 +40,34 @@ export default function Routing() {
               <Profile />
             </Suspense>
           }
-        />
-        <Route
-          path="/qr-code"
-          element={
-            <Suspense fallback={<LoaderElement />}>
-              <QR_Code />
-            </Suspense>
-          }
+          errorElement={<ErrorPage />}
         />
       </Route>
 
       <Route element={<ProtectedRoute onlyAdminRoutes />}>
         <Route
-          path="/staff"
+          path="/inspectors"
           element={
             <Suspense fallback={<LoaderElement />}>
-              <Staff />
+              <Inspectors />
+            </Suspense>
+          }
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="/regions"
+          element={
+            <Suspense fallback={<LoaderElement />}>
+              <Regions />
+            </Suspense>
+          }
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="/admin-report"
+          element={
+            <Suspense fallback={<LoaderElement />}>
+              <AdminReport />
             </Suspense>
           }
           errorElement={<ErrorPage />}
@@ -67,12 +84,65 @@ export default function Routing() {
           }
           errorElement={<ErrorPage />}
         />
-      </Route>
         <Route
-          path="/social-workers"
+          path="/qr-code"
           element={
             <Suspense fallback={<LoaderElement />}>
-              <SocialWorkers />
+              <QR_Code />
+            </Suspense>
+          }
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="/clients"
+          element={
+            <Suspense fallback={<LoaderElement />}>
+              <Clients />
+            </Suspense>
+          }
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="/assigned-social-worker"
+          element={
+            <Suspense fallback={<LoaderElement />}>
+              <AssignedSocialWorker />
+            </Suspense>
+          }
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="/nurse"
+          element={
+            <Suspense fallback={<LoaderElement />}>
+              <Nurse />
+            </Suspense>
+          }
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="/favours"
+          element={
+            <Suspense fallback={<LoaderElement />}>
+              <Favours />
+            </Suspense>
+          }
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="/inspector-report"
+          element={
+            <Suspense fallback={<LoaderElement />}>
+              <InspectorReport />
+            </Suspense>
+          }
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="/social-worker-report/:id"
+          element={
+            <Suspense fallback={<LoaderElement />}>
+              <SocialWorkerReport />
             </Suspense>
           }
           errorElement={<ErrorPage />}
@@ -81,6 +151,3 @@ export default function Routing() {
     </Routes>
   );
 }
-
-// eve.holt@reqres.in
-// cityslicka

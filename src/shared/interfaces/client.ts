@@ -1,11 +1,19 @@
-import FunctionalClass from "../enums/functionalClass";
-
 export default interface IClient {
+  lastName: string;
   firstName: string;
   middleName: string;
-  lastName: string;
-  functionalClass: FunctionalClass;
-  cottage: boolean;
+  functionalClass: string;
   address: string;
+  id: number;
+  gpwVeteran: boolean;
+  warVictim: boolean;
+  lonelyInvalid: boolean;
+  lonelyOldPerson: boolean;
+  cottage: boolean;
   regionId: number;
+  
+  socialWorker?: {
+    id: number;
+    fio: string;
+  };
 }

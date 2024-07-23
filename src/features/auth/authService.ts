@@ -1,6 +1,9 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import baseURL, { ENDPOINTS } from "../../shared/endpoints";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { ENDPOINTS } from "../../shared/endpoints";
 import IInspector from "../../shared/interfaces/inspector";
+import IAdmin from "../../shared/interfaces/admin";
+import { baseQueryWithReauth } from "../baseQueryWithReauth";
+import IPassword from "../../shared/interfaces/password";
 
 interface ISigninProps {
   login: string;
@@ -9,37 +12,41 @@ interface ISigninProps {
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${baseURL}/`,
-    // credentials: "include",
-    prepareHeaders: (headers) => {
-      // const token = localStorage.getItem("accessToken");
-      // if (token) {
-      //   headers.set("authorization", `Bearer ${token}`);
-      //   return headers;
-      // }
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     signin: builder.mutation({
       query: ({ login, password }: ISigninProps) => ({
-        url: ENDPOINTS.SIGNIN,
+        url: ENDPOINTS.AUTH.SIGNIN,
         method: "POST",
         body: { login: login, password: password },
       }),
     }),
-    getCode: builder.query<string, void>({
+    getUser: builder.mutation<IInspector | IAdmin, void>({
       query: () => ({
-        url: ENDPOINTS.CODE,
+        url: ENDPOINTS.AUTH.USER,
+        method: "GET",
       }),
     }),
-    getUser: builder.query<IInspector, void>({
-      query: () => ({
-        url: ENDPOINTS.USER,
+    updateUser: builder.mutation({
+      query: (data) => ({
+        url: ENDPOINTS.AUTH.PERSONAL_INFO,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
+    updatePassword: builder.mutation<void, IPassword>({
+      query: (data) => ({
+        url: ENDPOINTS.AUTH.PASSWORD,
+        method: "PATCH",
+        body: data,
       }),
     }),
   }),
 });
 
-export const { useSigninMutation, useGetCodeQuery, useLazyGetUserQuery } =
-  authApi;
+export const {
+  useSigninMutation,
+  useGetUserMutation,
+  useUpdateUserMutation,
+  useUpdatePasswordMutation,
+} = authApi;

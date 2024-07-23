@@ -1,15 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ErrorText, Form, InputContainer, InputField, Title } from "./styled";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../app/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import LoaderElement from "../../shared/ui/loaderElement";
 import {
-  useLazyGetUserQuery,
+  useGetUserMutation,
   useSigninMutation,
 } from "../../features/auth/authService";
 import { setTokens, setUser } from "../../features/auth/authSlice";
 import { ButtonDefault } from "../../shared/globalStyles";
+import Post from "../../shared/enums/post";
 
 interface IFormInput {
   login: string;
@@ -17,6 +18,9 @@ interface IFormInput {
 }
 
 export default function AuthForm() {
+  const user = useAppSelector((state) => state.auth.user);
+  const [isLoaded, setLoaded] = useState<boolean>(false);
+
   const [
     signin,
     {
@@ -24,33 +28,13 @@ export default function AuthForm() {
       isSuccess: isSigninSuccess,
       isError: isSigninError,
       isLoading: isSigninLoading,
-      error: signinError,
     },
   ] = useSigninMutation();
 
   const [
     getUser,
-    {
-      data: getUserData,
-      isError: isGetUserError,
-      isSuccess: isGetUserSuccess,
-      error: getUserError,
-    },
-  ] = useLazyGetUserQuery();
-
-  const onSubmit: SubmitHandler<IFormInput> = async ({ login, password }) => {
-    try {
-      await signin({ login: login, password: password });
-      if (isSigninError) {
-        throw signinError;
-      }
-    } catch (e) {
-      console.log(`authForm > index.ts > signinError: ${e}`);
-    }
-    reset();
-  };
-  // eve.holt@reqres.in
-  // cityslicka
+    { data: getUserData, isError: isGetUserError, isSuccess: isGetUserSuccess },
+  ] = useGetUserMutation();
 
   const {
     register,
@@ -58,6 +42,15 @@ export default function AuthForm() {
     reset,
     formState: { errors },
   } = useForm<IFormInput>();
+
+  const onSubmit: SubmitHandler<IFormInput> = async ({ login, password }) => {
+    try {
+      await signin({ login: login, password: password });
+    } catch (e) {
+      console.log("authForm > signinError", e);
+    }
+    reset();
+  };
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -69,23 +62,31 @@ export default function AuthForm() {
         (async () => {
           await getUser();
         })();
-        if (isGetUserSuccess) {
-          dispatch(setUser(getUserData!));
-          navigate("/social-workers");
-        } else {
-          throw getUserError;
-        }
       } catch (e) {
-        console.log(`authForm > index.ts > getUserError: ${e}`);
+        console.log("authForm > getUserError", e);
       }
     }
   }, [isSigninSuccess]);
 
+  useEffect(() => {
+    if (isGetUserSuccess && getUserData) {
+      dispatch(setUser(getUserData!));
+    }
+  }, [isGetUserSuccess, getUserData]);
+
+  useEffect(() => {
+    user?.post && setLoaded(true);
+
+    if (isLoaded && user?.post === Post.INSPECTOR) {
+      navigate("/social-workers");
+    } else if (isLoaded && user?.post === Post.ADMIN) {
+      navigate("/inspectors");
+    }
+  }, [user, isLoaded]);
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Title>Вход в аккаунт</Title>
-      {/* <h3>eve.holt@reqres.in</h3> */}
-      {/* <h3>cityslicka</h3> */}
       <InputContainer>
         <InputField
           {...register("login", {
@@ -96,6 +97,8 @@ export default function AuthForm() {
           placeholder="Логин"
           type="text"
           $borderRed={isSigninError}
+          autoComplete="off"
+          tabIndex={1}
         />
         {errors.login?.message}
       </InputContainer>
@@ -109,13 +112,20 @@ export default function AuthForm() {
           placeholder="Пароль"
           type="text"
           $borderRed={isSigninError}
+          autoComplete="off"
+          tabIndex={2}
         />
         {errors.password?.message}
       </InputContainer>
       {isSigninLoading ? (
         <LoaderElement />
       ) : (
-        <ButtonDefault onClick={handleSubmit(onSubmit)} $reverse $width="100px">
+        <ButtonDefault
+          onClick={handleSubmit(onSubmit)}
+          $reverse
+          $width="100px"
+          tabIndex={3}
+        >
           Войти
         </ButtonDefault>
       )}

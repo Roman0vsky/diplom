@@ -1,9 +1,10 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import IInspector from "../../shared/interfaces/inspector";
+import IAdmin from "../../shared/interfaces/admin";
 import Post from "../../shared/enums/post";
 
 interface IAuthState {
-  user: IInspector | null;
+  user: IInspector | IAdmin | null;
 }
 
 interface ITokens {
@@ -11,20 +12,27 @@ interface ITokens {
   refreshToken: string;
 }
 
-const admin: IInspector = {
-  firstName: "admin",
-  middleName: "admin",
-  lastName: "admin",
-  post: Post.ADMIN,
-  regionId: 0,
-};
+// const admin: IAdmin = {
+//   login: "admin",
+//   lastName: "admin",
+//   firstName: "admin",
+//   middleName: "admin",
+//   id: 0,
+//   workerId: 0,
+//   post: Post.ADMIN,
+//   region: { name: "region1", id: 1 },
+// };
 
 const inspector: IInspector = {
+  lastName: "inspector",
   firstName: "inspector",
   middleName: "inspector",
-  lastName: "inspector",
+  login: "inspector",
+  id: 0,
+  workerId: 0,
   post: Post.INSPECTOR,
-  regionId: 1,
+  region: { name: "region2", id: 2 },
+  inspectorId: 0,
 };
 
 const initialState: IAuthState = {
@@ -34,10 +42,13 @@ const initialState: IAuthState = {
 };
 
 export const authSlice = createSlice({
-  name: "auth",
+  name: "authSlice",
   initialState,
   reducers: {
-    setUser: (state, { payload }: PayloadAction<IInspector>) => {
+    setUser: (
+      state,
+      { payload }: PayloadAction<IInspector | IAdmin | null>
+    ) => {
       state.user = payload;
     },
     setTokens: (_, { payload }: PayloadAction<ITokens>) => {
@@ -46,23 +57,9 @@ export const authSlice = createSlice({
     },
     signOut: (state) => {
       state.user = null;
-      localStorage.setItem("accessToken", "");
-      localStorage.setItem("refreshToken", "");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     },
-  },
-  extraReducers: {
-    // [fetchUsers.fulfilled.type]: (state, action: PayloadAction<IUser[]>) => {
-    //   state.isLoading = false;
-    //   state.users = action.payload;
-    //   state.error = "";
-    // },
-    // [fetchUsers.pending.type]: (state) => {
-    //   state.isLoading = true;
-    // },
-    // [fetchUsers.rejected.type]: (state, action: PayloadAction<string>) => {
-    //   state.isLoading = false;
-    //   state.error = action.payload;
-    // },
   },
 });
 export const { setUser, setTokens, signOut } = authSlice.actions;

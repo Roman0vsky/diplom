@@ -23,6 +23,7 @@ export const Title = styled.h1`
   color: ${Palette.white};
   font-size: 24px;
   font-weight: 600;
+  user-select: none;
 `;
 
 export const Logo = styled.div`
@@ -39,6 +40,7 @@ export const Nav = styled.nav`
   .link {
     color: ${Palette.white};
     text-decoration: none;
+    user-select: none;
   }
 `;
 

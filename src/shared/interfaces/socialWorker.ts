@@ -5,5 +5,9 @@ export default interface ISocialWorker {
   middleName: string;
   lastName: string;
   post: Post;
-  inspectorId: number;
+  id: number;
+  workerId: number;
+  inspectorId: number | string;
+  longitude: number | string;
+  latitude: number | string;
 }

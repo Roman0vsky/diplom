@@ -1,9 +1,5 @@
 import styled from "styled-components";
-import {
-  ButtonDefault,
-  InputDefault,
-  Palette,
-} from "../../shared/globalStyles";
+import { InputDefault, Palette } from "../../shared/globalStyles";
 
 export const Form = styled.form`
   display: flex;
@@ -48,6 +44,7 @@ export const Title = styled.h1`
   font-weight: 500;
   margin-top: 20px;
   margin-bottom: 30px;
+  user-select: none;
 `;
 
 export const InputContainer = styled.div`

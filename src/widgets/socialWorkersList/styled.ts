@@ -1,40 +1,37 @@
 import styled from "styled-components";
 import { Palette } from "../../shared/globalStyles";
 
-export const Wrapper = styled.section`
+export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid ${Palette.borderColor};
-  height: fit-content;
+  align-items: flex-end;
+  gap: 14px;
 `;
 
-export const Worker = styled.div`
+export const LoaderContainer = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 300px;
-  min-height: 40px;
-  padding: 12px 10px;
-
-  &:nth-child(even) {
-    background-color: ${Palette.lightGrey};
-    border: 1px solid ${Palette.borderColor};
-    border-left: 0;
-    border-right: 0;
-  }
-`;
-
-export const WorkerName = styled.div`
-  display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: ${Palette.fontSize};
-  color: ${Palette.fontColor};
+  width: 540px;
 `;
-export const WorkerCount = styled.div`
+
+export const TextContainer = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 20px;
+`;
+
+export const Text = styled.h2`
+  text-align: center;
+  font-size: 21px;
+  width: 540px;
+`;
+
+export const ImgContainer = styled.div<{ $visibility?: boolean }>`
+  display: ${(props) => (props.$visibility ? "flex" : "none")};
   justify-content: center;
-  font-size: ${Palette.fontSize};
-  color: ${Palette.fontColor};
+  align-items: center;
+  height: 41px;
+  width: 41px;
+  background-color: ${Palette.white};
 `;

@@ -1,4 +1,3 @@
-import React from "react";
 import { Loader, Wrapper } from "./styled";
 
 export default function LoaderElement() {
